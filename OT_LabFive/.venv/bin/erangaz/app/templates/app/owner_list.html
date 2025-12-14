@@ -1,0 +1,68 @@
+<!-- app/templates/app/owner_list.html -->
+{% extends 'app/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ title }}</h1>
+    {% if filter_info %}
+        <div class="filter-info">
+            {{ filter_info }}
+        </div>
+    {% endif %}
+</div>
+
+<div class="stats-bar">
+    <p>Всего владельцев: <strong>{{ total_count }}</strong></p>
+    <div class="filters">
+        <a href="{% url 'owner_list' %}" class="filter-btn">Все владельцы</a>
+        <a href="{% url 'current_owners' %}" class="filter-btn">Текущие владельцы</a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Владелец</th>
+                <th>Дата рождения</th>
+                <th>Пол</th>
+                <th>Телефон</th>
+                <th>Email</th>
+                <th>Дата регистрации</th>
+                <th>Автомобили во владении</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for owner in owners %}
+            <tr>
+                <td><strong>{{ owner.first_name }} {{ owner.last_name }}</strong></td>
+                <td>{{ owner.birth_date }}</td>
+                <td>{{ owner.get_gender_display }}</td>
+                <td>{{ owner.phone }}</td>
+                <td>{{ owner.email }}</td>
+                <td>{{ owner.registration_date }}</td>
+                <td>
+                    {% if owner.owned_cars.all %}
+                        {% for car in owner.owned_cars.all|slice:":3" %}
+                            <span class="badge">{{ car.model_name }}</span>
+                        {% endfor %}
+                        {% if owner.owned_cars.count > 3 %}
+                            <span class="badge">+{{ owner.owned_cars.count|add:"-3" }}</span>
+                        {% endif %}
+                    {% else %}
+                        Нет автомобилей
+                    {% endif %}
+                    ({{ owner.owned_cars.count }})
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Нет данных о владельцах</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

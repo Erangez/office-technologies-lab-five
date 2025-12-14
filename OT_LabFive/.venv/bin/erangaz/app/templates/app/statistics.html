@@ -1,0 +1,148 @@
+<!-- app/templates/app/statistics.html -->
+{% extends 'app/base.html' %}
+
+{% block title %}Статистика - Автомобильная база данных{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Статистика автомобильной базы данных</h1>
+</div>
+
+<div class="stats-bar">
+    <div>
+        <p>Всего автомобилей: <strong>{{ total_cars }}</strong></p>
+    </div>
+    <div>
+        <p>Средняя цена: <strong>${{ avg_car_price|floatformat:2 }}</strong></p>
+    </div>
+    <div>
+        <p>Всего владельцев: <strong>{{ total_owners }}</strong></p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Статистика по производителям</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Производитель</th>
+                <th>Страна</th>
+                <th>Количество моделей</th>
+                <th>Средняя цена</th>
+                <th>Максимальная мощность</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for manufacturer in manufacturers_stats %}
+            <tr>
+                <td>{{ manufacturer.name }}</td>
+                <td>{{ manufacturer.get_country_display }}</td>
+                <td>{{ manufacturer.car_count }}</td>
+                <td>${{ manufacturer.avg_price|floatformat:2 }}</td>
+                <td>{{ manufacturer.max_horsepower }} л.с.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Распределение по типам кузова</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Тип кузова</th>
+                <th>Количество</th>
+                <th>Средняя цена</th>
+                <th>Средняя мощность</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in body_type_stats %}
+            <tr>
+                <td>{{ stat.body_type }}</td>
+                <td>{{ stat.count }}</td>
+                <td>${{ stat.avg_price|floatformat:2 }}</td>
+                <td>{{ stat.avg_horsepower|floatformat:0 }} л.с.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Распределение по типу топлива</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Тип топлива</th>
+                <th>Количество</th>
+                <th>Средняя цена</th>
+                <th>Средний год выпуска</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in fuel_stats %}
+            <tr>
+                <td>{{ stat.fuel_type }}</td>
+                <td>{{ stat.count }}</td>
+                <td>${{ stat.avg_price|floatformat:2 }}</td>
+                <td>{{ stat.avg_year|floatformat:0 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Самые дорогие автомобили</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Модель</th>
+                <th>Производитель</th>
+                <th>Цена</th>
+                <th>Мощность</th>
+                <th>Год выпуска</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in most_expensive_cars %}
+            <tr>
+                <td>{{ car.model_name }}</td>
+                <td>{{ car.manufacturer.name }}</td>
+                <td>${{ car.price }}</td>
+                <td>{{ car.horsepower }} л.с.</td>
+                <td>{{ car.production_year }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Самые мощные автомобили</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Модель</th>
+                <th>Производитель</th>
+                <th>Мощность</th>
+                <th>Цена</th>
+                <th>Тип топлива</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in most_powerful_cars %}
+            <tr>
+                <td>{{ car.model_name }}</td>
+                <td>{{ car.manufacturer.name }}</td>
+                <td>{{ car.horsepower }} л.с.</td>
+                <td>${{ car.price }}</td>
+                <td>{{ car.get_fuel_type_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

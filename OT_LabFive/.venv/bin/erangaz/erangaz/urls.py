@@ -1,6 +1,8 @@
-from django.urls import path
-from app import views
+# project/urls.py (или то что у вас называется как проект)
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
-    path('',views.index, name='home'),
+    path('admin/', admin.site.urls),
+    path('', include('app.urls')),  # должно быть 'app.urls'
 ]

@@ -1,0 +1,67 @@
+<!-- app/templates/app/manufacturer_list.html -->
+{% extends 'app/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ title }}</h1>
+    {% if filter_info %}
+        <div class="filter-info">
+            {{ filter_info }}
+        </div>
+    {% endif %}
+</div>
+
+<div class="stats-bar">
+    <p>Всего производителей: <strong>{{ total_count }}</strong></p>
+    <div class="filters">
+        <strong>Фильтры по стране:</strong>
+        {% for code, name in countries %}
+            <a href="{% url 'manufacturers_by_country' code %}" class="filter-btn">{{ name }}</a>
+        {% endfor %}
+        <a href="{% url 'manufacturer_list' %}" class="filter-btn">Все производители</a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Производитель</th>
+                <th>Страна</th>
+                <th>Год основания</th>
+                <th>Штаб-квартира</th>
+                <th>Веб-сайт</th>
+                <th>Количество моделей</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for manufacturer in manufacturers %}
+            <tr>
+                <td><strong>{{ manufacturer.name }}</strong></td>
+                <td>
+                    <span class="badge badge-{{ manufacturer.country|lower }}">
+                        {{ manufacturer.get_country_display }}
+                    </span>
+                </td>
+                <td>{{ manufacturer.founded_year }}</td>
+                <td>{{ manufacturer.headquarters }}</td>
+                <td>
+                    <a href="{{ manufacturer.website }}" target="_blank">
+                        {{ manufacturer.website|truncatechars:30 }}
+                    </a>
+                </td>
+                <td>{{ manufacturer.cars.count }}</td>
+                <td>{{ manufacturer.description|truncatewords:10 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Нет производителей по выбранному фильтру</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

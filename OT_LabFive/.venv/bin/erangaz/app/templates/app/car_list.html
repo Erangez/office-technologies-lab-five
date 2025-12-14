@@ -1,0 +1,76 @@
+<!-- app/templates/app/car_list.html -->
+{% extends 'app/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ title }}</h1>
+    {% if filter_info %}
+        <div class="filter-info">
+            {{ filter_info }}
+        </div>
+    {% endif %}
+</div>
+
+<div class="stats-bar">
+    <p>Всего автомобилей: <strong>{{ total_count }}</strong></p>
+    <div class="filters">
+        <strong>Фильтры по типу кузова:</strong>
+        {% for code, name in body_types %}
+            <a href="{% url 'cars_by_body_type' code %}" class="filter-btn">{{ name }}</a>
+        {% endfor %}
+        <a href="{% url 'car_list' %}" class="filter-btn">Все автомобили</a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Модель</th>
+                <th>Производитель</th>
+                <th>Год выпуска</th>
+                <th>Тип кузова</th>
+                <th>Двигатель</th>
+                <th>Мощность</th>
+                <th>Топливо</th>
+                <th>Цена</th>
+                <th>Цвет</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in cars %}
+            <tr>
+                <td><strong>{{ car.model_name }}</strong></td>
+                <td>
+                    {{ car.manufacturer.name }}
+                    <span class="badge badge-{{ car.manufacturer.country|lower }}">
+                        {{ car.manufacturer.get_country_display }}
+                    </span>
+                </td>
+                <td>{{ car.production_year }}</td>
+                <td>
+                    <span class="badge badge-{{ car.body_type|lower }}">
+                        {{ car.get_body_type_display }}
+                    </span>
+                </td>
+                <td>{{ car.engine_volume }} л</td>
+                <td>{{ car.horsepower }} л.с.</td>
+                <td>
+                    <span class="badge badge-{{ car.fuel_type|lower }}">
+                        {{ car.get_fuel_type_display }}
+                    </span>
+                </td>
+                <td>${{ car.price }}</td>
+                <td>{{ car.color }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9">Нет автомобилей по выбранному фильтру</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

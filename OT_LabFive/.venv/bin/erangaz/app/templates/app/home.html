@@ -1,0 +1,91 @@
+<!-- app/templates/app/home.html -->
+{% extends 'app/base.html' %}
+
+{% block title %}Главная - Автомобильная база данных{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Добро пожаловать в автомобильную базу данных</h1>
+    <p>Управление и анализ данных об автомобилях, производителях и владельцах</p>
+</div>
+
+<div class="stats-bar">
+    <div>
+        <p>Всего автомобилей: <strong>{{ total_cars }}</strong></p>
+    </div>
+    <div>
+        <p>Производителей: <strong>{{ total_manufacturers }}</strong></p>
+    </div>
+    <div>
+        <p>Владельцев: <strong>{{ total_owners }}</strong></p>
+    </div>
+    <div>
+        <p>Сервисных записей: <strong>{{ total_service_records }}</strong></p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Недавно добавленные автомобили</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Модель</th>
+                <th>Производитель</th>
+                <th>Год выпуска</th>
+                <th>Тип кузова</th>
+                <th>Мощность</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in recent_cars %}
+            <tr>
+                <td>{{ car.model_name }}</td>
+                <td>{{ car.manufacturer.name }}</td>
+                <td>{{ car.production_year }}</td>
+                <td>
+                    {{ car.get_body_type_display }}
+                    <span class="badge badge-{{ car.body_type|lower }}">
+                        {{ car.body_type }}
+                    </span>
+                </td>
+                <td>{{ car.horsepower }} л.с.</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Нет данных об автомобилях</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Последние сервисные записи</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Автомобиль</th>
+                <th>Тип обслуживания</th>
+                <th>Дата</th>
+                <th>Стоимость</th>
+                <th>Сервисный центр</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in recent_service %}
+            <tr>
+                <td>{{ record.car.model_name }}</td>
+                <td>{{ record.get_service_type_display }}</td>
+                <td>{{ record.service_date }}</td>
+                <td>${{ record.cost }}</td>
+                <td>{{ record.service_center }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Нет данных о сервисных записях</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
